@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+    <title>CutFishWeb</title>
+    <link rel="stylesheet" href="TemplateData/style.css">
+</head>
+<body class="dark" style="text-align: center;margin: 0;">
+<div id="gameContainer" class="unity-desktop">
+    <!--    style="position: relative;top: 50%;left: 50%;transform: translate(-50%,-50%)"-->
+    <canvas id="unity-canvas" width=960 height=540
+            style="width: 960px; height: 540px;"></canvas>
+</div>
+<div id="loading-cover" style="display: none">
+    <div id="unity-loading-bar">
+        <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+        </div>
+        <div class="spinner"></div>
+    </div>
+</div>
+<!--<script src="Build/FishRainWeb.loader.js"></script>-->
+<script>
+
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/FishRainWeb.loader.js";
+    const config = {
+        dataUrl: buildUrl + "/FishRainWeb.data.unityweb",
+        frameworkUrl: buildUrl + "/FishRainWeb.framework.js.unityweb",
+        codeUrl: buildUrl + "/FishRainWeb.wasm.unityweb",
+
+
+
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "yoku",
+        productName: "CutFishWeb",
+        productVersion: "1.0",
+    };
+    
+    const container = document.querySelector("#gameContainer");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingCover = document.querySelector("#loading-cover");
+    const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+    const progressBarFull = document.querySelector("#unity-progress-bar-full");
+    const spinner = document.querySelector('.spinner');
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
+        canvas.style.position = "fixed";
+
+        document.body.style.textAlign = "left";
+    }
+
+    loadingCover.style.display = "";
+
+    const script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+            console.log("loading");
+            spinner.style.display = "none";
+            progressBarEmpty.style.display = "";
+            progressBarFull.style.width = `${100 * progress}%`;
+        }).then((unityInstance) => {
+            console.log("finished");
+            loadingCover.style.display = "none";
+        }).catch((message) => {
+            alert(message);
+        });
+    };
+    document.body.appendChild(script);
+
+</script>
+</body>
+</html>
